@@ -126,11 +126,10 @@
     </main>
 
     <footer class="bg-brand-dark border-t border-slate-800 py-4 pb-24 lg:pb-4 text-center text-xs text-slate-500">
-        © 2026 Servicio Automotriz AutoElit (autoelit.com). Todos los derechos reservados.
+        © 2026 Servicio Automotriz AutoElit. Todos los derechos reservados.
     </footer>
 
     <script>
-        // CONFIGURACIÓN ACTUALIZADA CON TU NÚMERO
         const CONFIG = {
             whatsappNumber: "528115774422",
             locale: "es-MX",
@@ -222,21 +221,46 @@
         }
 
         function showError(el, errEl, msg) {
-            errEl.textContent = msg; errEl.classList.toggle("hidden", !msg);
-            if (el) { el.classList.toggle("border-red-500", !!msg); el.classList.toggle("border-slate-700", !msg); }
+            errEl.textContent = msg; 
+            errEl.classList.toggle("hidden", !msg);
+            if (el) { 
+                el.classList.toggle("border-red-500", !!msg); 
+                el.classList.toggle("border-slate-700", !msg); 
+            }
         }
 
         function validateAll() {
             const hasServices = state.selection.size > 0 || state.other;
             showError(null, dom.servicesError, hasServices ? "" : "Selecciona al menos un servicio o describe tu falla.");
+            
             const v = {
-                name: dom.name.value.trim().length >= 2 ? dom.name.value.trim() : (showError(dom.name, dom.nameError, "Ingresa el nombre"), null),
-                phone: dom.phone.value.replace(/\D/g, "").length >= 10 ? dom.phone.value.replace(/\D/g, "") : (showError(dom.phone, dom.phoneError, "Mínimo 10 dígitos"), null),
-                model: dom.model.value.trim().length >= 2 ? dom.model.value.trim() : (showError(dom.model, dom.modelError, "Indica el modelo"), null),
-                year: dom.year.value ? dom.year.value : (showError(dom.year, dom.yearError, "Selecciona el año"), null),
-                desc: state.other ? (dom.otherDesc.value.trim().length >= 5 ? dom.otherDesc.value.trim() : (showError(dom.otherDesc, dom.otherDescError, "Describe la falla"), null)) : ""
+                name: dom.name.value.trim(),
+                phone: dom.phone.value.replace(/\D/g, ""),
+                model: dom.model.value.trim(),
+                year: dom.year.value,
+                desc: state.other ? dom.otherDesc.value.trim() : ""
             };
-            if (!hasServices || !v.name || !v.phone || !v.model || !v.year || (state.other && !v.desc)) return null;
+
+            let isValid = true;
+
+            if (v.name.length >= 2) { showError(dom.name, dom.nameError, ""); }
+            else { showError(dom.name, dom.nameError, "Ingresa el nombre"); isValid = false; }
+
+            if (v.phone.length >= 10) { showError(dom.phone, dom.phoneError, ""); }
+            else { showError(dom.phone, dom.phoneError, "Mínimo 10 dígitos"); isValid = false; }
+
+            if (v.model.length >= 2) { showError(dom.model, dom.modelError, ""); }
+            else { showError(dom.model, dom.modelError, "Indica el modelo"); isValid = false; }
+
+            if (v.year) { showError(dom.year, dom.yearError, ""); }
+            else { showError(dom.year, dom.yearError, "Selecciona el año"); isValid = false; }
+
+            if (state.other) {
+                if (v.desc.length >= 5) { showError(dom.otherDesc, dom.otherDescError, ""); }
+                else { showError(dom.otherDesc, dom.otherDescError, "Describe la falla"); isValid = false; }
+            }
+
+            if (!hasServices || !isValid) return null;
             return v;
         }
 
@@ -249,7 +273,9 @@
             if (q.lines.length) msg += `📋 *Servicios:*\n` + q.lines.map(l => `• ${l.name} (${l.detail}): ${money.format(l.amount)}`).join("\n") + `\n\n`;
             if (state.other) msg += `🧰 *Falla compleja (por cotizar):*\n• Falla: ${client.desc}\n• Motor: ${dom.engineType.value}\n• Gravedad: ${dom.severity.value}\n\n`;
             msg += q.subtotal > 0 ? `💰 *Total estimado:* ${money.format(q.subtotal)} MXN` : `💰 *Total estimado:* Sujeto a revisión`;
-            msg += `\n\n_Enviado desde autoelit.com_`;
+            
+            // LA LÍNEA SOLICITADA HA SIDO ELIMINADA DE AQUÍ
+            
             window.open(`https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(msg)}`, "_blank");
         });
 
