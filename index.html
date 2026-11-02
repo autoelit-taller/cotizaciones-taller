@@ -126,7 +126,7 @@
     </main>
 
     <footer class="bg-brand-dark border-t border-slate-800 py-4 pb-24 lg:pb-4 text-center text-xs text-slate-500">
-        © 2026 Servicio Automotriz AutoElit. Todos los derechos reservados.
+        &copy; 2026 Servicio Automotriz AutoElit. Todos los derechos reservados.
     </footer>
 
     <script>
@@ -273,8 +273,6 @@
             if (q.lines.length) msg += `📋 *Servicios:*\n` + q.lines.map(l => `• ${l.name} (${l.detail}): ${money.format(l.amount)}`).join("\n") + `\n\n`;
             if (state.other) msg += `🧰 *Falla compleja (por cotizar):*\n• Falla: ${client.desc}\n• Motor: ${dom.engineType.value}\n• Gravedad: ${dom.severity.value}\n\n`;
             msg += q.subtotal > 0 ? `💰 *Total estimado:* ${money.format(q.subtotal)} MXN` : `💰 *Total estimado:* Sujeto a revisión`;
-            
-            // LA LÍNEA SOLICITADA HA SIDO ELIMINADA DE AQUÍ
             
             window.open(`https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(msg)}`, "_blank");
         });
